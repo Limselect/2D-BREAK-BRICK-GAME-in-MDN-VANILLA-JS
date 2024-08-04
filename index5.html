@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        background: #eee;
+        display: block;
+        margin: 0 auto;
+        margin-top: 10%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <script>
+      const canvas = document.getElementById("myCanvas");
+      const ctx = canvas.getContext("2d");
+
+      let x = canvas.width / 2;
+      let y = canvas.height - 30;
+
+      let dx = 2;
+      let dy = -2;
+
+      const ballRadius = 10;
+
+      // 공을 쳐내기 위한 paddle 변수 정의
+      var paddleHeight = 10;
+      var paddleWidth = 75;
+      // 캔버스의 가로 길이 480, 패들의 가로길이 75에서 나누기 2
+      var paddleX = (canvas.width - paddleWidth) / 2;
+
+      // paddle을 컨트롤 하기 위한 키보드 설정의 변수 정의
+      var rightPressed = false;
+      var leftPressed = false;
+
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      // paddle을 스크린에 그리는 함수 추가의 코드 작성
+      function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(
+          paddleX,
+          canvas.height - paddleHeight,
+          paddleWidth,
+          paddleHeight
+        );
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        x += dx;
+        y += dy;
+
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
+        }
+
+        if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+          dy = -dy;
+        }
+
+        // paddle의 이동 로직 짜기
+        // draw 함수 안에 있어서 키를 누르면 10ms 프레임당 7px만큼의 paddle의 위치변화
+        if (rightPressed) {
+          paddleX = paddleX + 7;
+        } else if (leftPressed) {
+          paddleX = paddleX - 7;
+        }
+        // 키를 오래 누르면 화면 밖으로 사라짐
+      }
+
+      // keyup, keydown 이벤트를 활용해 키보드 활성화 시키기.
+      // keydown 키 누름(활성화), keyup 키 뗌(비활성화)
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+
+      // 효과 구현 함수 정의
+      // 키코드 왼쪽 방향키(37), 오른쪽 방향키(39)
+      function keyDownHandler(e) {
+        if (e.keyCode == 39) {
+          rightPressed = true;
+        } else if (e.keyCode == 37) {
+          leftPressed = true;
+        }
+      }
+
+      function keyUpHandler(e) {
+        if (e.keyCode == 39) {
+          rightPressed = false;
+        } else if (e.keyCode == 37) {
+          leftPressed = false;
+        }
+      }
+
+      setInterval(draw, 10);
+    </script>
+  </body>
+</html>
