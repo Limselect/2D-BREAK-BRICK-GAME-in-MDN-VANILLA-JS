@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- 프로젝트 생성일: 2024년 08월 04일(일요일) -->
+<!-- 프로젝트 작성자: 임선택 -->
+<!-- 프로젝트 목적: 게임을 통한 Vanilla JS 이해 -->
+<!-- 차후 CSS 적용할 예정. -->
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,10 +20,16 @@
         margin: 0 auto;
         margin-top: 10%;
       }
+
+      button {
+        display: block;
+        margin: 50px auto 0 auto;
+      }
     </style>
   </head>
   <body>
     <canvas id="myCanvas" width="480" height="320"></canvas>
+    <button id="runButton">Start Game!</button>
 
     <script>
       const canvas = document.getElementById("myCanvas");
@@ -56,8 +66,9 @@
         }
       }
 
-      // 점수 계산하기
       var score = 0;
+
+      let lives = 3;
 
       function drawBall() {
         ctx.beginPath();
@@ -103,11 +114,9 @@
         drawBricks();
         drawBall();
         drawPaddle();
-        // drawScore 함수 호출
         drawScore();
+        drawLives();
         collisionDetection();
-        x += dx;
-        y += dy;
 
         if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
           dx = -dx;
@@ -115,12 +124,23 @@
 
         if (y + dy < ballRadius) {
           dy = -dy;
-        } else if (y + dy > canvas.height - ballRadius) {
+        } 
+        else if (y + dy > canvas.height - ballRadius) 
+        {
           if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
           } else {
-            alert("GAME OVER");
-            document.location.reload();
+            lives--;
+            if (!lives) {
+              alert("GAME OVER");
+              document.location.reload();
+            } else {
+              x = canvas.width / 2;
+              y = canvas.height - 30;
+              dx = 3;
+              dy = -3;
+              paddleX = (canvas.width - paddleWidth) / 2;
+            }
           }
         }
 
@@ -129,6 +149,10 @@
         } else if (leftPressed && paddleX > 0) {
           paddleX = paddleX - 7;
         }
+
+        x += dx;
+        y += dy;
+        requestAnimationFrame(draw);
       }
 
       document.addEventListener("keydown", keyDownHandler, false);
@@ -163,9 +187,7 @@
               ) {
                 dy = -dy;
                 b.status = 0;
-                // 벽돌이 깨질 때마다 score 값 증가시키기
                 score++;
-                // 벽돌이 모두 깨지면 승리의 메세지 나타내기
                 if (score == brickRowCount * brickColumnCount) {
                   alert("축하드립니다! 당신이 이겼습니다!");
                   document.location.reload();
@@ -176,16 +198,22 @@
         }
       }
 
-      // score display 만들기
       function drawScore() {
-        // 폰트 사이즈 16px, Arial 글꼴
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
-        // fillText(text, x, y); or fillText(text, x, y, maxWidth);
         ctx.fillText("Score: " + score, 8, 20);
       }
 
-      setInterval(draw, 10);
+      function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
+      }
+
+        document.getElementById("runButton").addEventListener("click", function() {
+          draw();
+          this.disabled = true;
+        });
     </script>
   </body>
 </html>
