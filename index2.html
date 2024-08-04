@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        background: #eee;
+        display: block;
+        margin: 0 auto;
+        margin-top: 10%;
+      }
+    </style>
+  </head>
+  <!-- Vanilla JS, 2D Break Brick Game Project in MDN JS 2D GAME PROJECT -->
+  <!-- 이미지의 렌더링과 움직임, 충돌감지, 컨트롤 메커니즘으로 canvas / tag 이해 증진 -->
+  <body>
+    <!-- 게임이 렌더될 배경 생성 가로 480px, 세로 320px -->
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <script>
+      const canvas = document.getElementById("myCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // 원이 움직이게 만들기
+      // 원의 좌표 지정 x: 캔버스의 1/2지점, y: 캔버스 -30지점(위로 올라감)
+      let x = canvas.width / 2;
+      let y = canvas.height - 30;
+
+      // 원의 움직임을 표현하기 위해 매 프레임(10ms)마다 움직일 좌표값
+      // dx: 가로방향(우) 2px, dy: 세로방향(상) -2px.
+      let dx = 2;
+      let dy = -2;
+
+      // 드로잉 루프를 정의하기
+      function draw() {
+        // 다음 프레임 전, 캔버스 지우기
+        // x: 0, y: 0(좌상단) 좌표값 기준으로 캔버스의 가로값(전체), 세로값(전체) 모두 지우기.
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        // 시계 방향으로 그려지는 false 생략 가능(기본: flase)
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+        // setInerval로 x, y을 무한히 초기화함.
+        x = x + dx;
+        y = y + dy;
+      }
+      // setInterval로 draw 함수는 10ms마다 무한히 호출됨.
+      setInterval(draw, 10);
+    </script>
+  </body>
+</html>
