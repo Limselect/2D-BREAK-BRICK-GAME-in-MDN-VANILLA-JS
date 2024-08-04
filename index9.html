@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        background: #eee;
+        display: block;
+        margin: 0 auto;
+        margin-top: 10%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <script>
+      const canvas = document.getElementById("myCanvas");
+      const ctx = canvas.getContext("2d");
+
+      let x = canvas.width / 2;
+      let y = canvas.height - 30;
+
+      let dx = 2;
+      let dy = -2;
+
+      const ballRadius = 10;
+
+      var paddleHeight = 10;
+      var paddleWidth = 75;
+      var paddleX = (canvas.width - paddleWidth) / 2;
+
+      var rightPressed = false;
+      var leftPressed = false;
+
+      const brickRowCount = 3;
+      const brickColumnCount = 5;
+      const brickWidth = 75;
+      const brickHeight = 20;
+      const brickPadding = 10;
+      const brickOffsetTop = 30;
+      const brickOffsetLeft = 30;
+
+      const bricks = [];
+      for (let c = 0; c < brickColumnCount; c++) {
+        bricks[c] = [];
+        for (let r = 0; r < brickRowCount; r++) {
+          // status: 1, status 속성을 각 벽돌의 개체에 추가함
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+      }
+
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(
+          paddleX,
+          canvas.height - paddleHeight,
+          paddleWidth,
+          paddleHeight
+        );
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawBricks() {
+        for (let c = 0; c < brickColumnCount; c++) {
+          for (let r = 0; r < brickRowCount; r++) {
+            // 그리기 전에 속성을 확인하고 값 1을 주어 활성화.
+            if (bricks[c][r].status === 1) {
+              const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+              const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+              bricks[c][r].x = brickX;
+              bricks[c][r].y = brickY;
+              ctx.beginPath();
+              ctx.rect(brickX, brickY, brickWidth, brickHeight);
+              ctx.fillStyle = "#0095DD";
+              ctx.fill();
+              ctx.closePath();
+            }
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBricks();
+        drawBall();
+        drawPaddle();
+        // 충돌 감지 함수 호출
+        collisionDetection();
+        x += dx;
+        y += dy;
+
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
+        }
+
+        if (y + dy < ballRadius) {
+          dy = -dy;
+        } else if (y + dy > canvas.height - ballRadius) {
+          if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+          } else {
+            alert("GAME OVER");
+            document.location.reload();
+          }
+        }
+
+        if (rightPressed && paddleX < canvas.width - paddleWidth) {
+          paddleX = paddleX + 7;
+        } else if (leftPressed && paddleX > 0) {
+          paddleX = paddleX - 7;
+        }
+      }
+
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+
+      function keyDownHandler(e) {
+        if (e.keyCode == 39) {
+          rightPressed = true;
+        } else if (e.keyCode == 37) {
+          leftPressed = true;
+        }
+      }
+
+      function keyUpHandler(e) {
+        if (e.keyCode == 39) {
+          rightPressed = false;
+        } else if (e.keyCode == 37) {
+          leftPressed = false;
+        }
+      }
+
+      // 벽돌 충돌 감지 함수
+      function collisionDetection() {
+        for (let c = 0; c < brickColumnCount; c++) {
+          for (let r = 0; r < brickRowCount; r++) {
+            const b = bricks[c][r];
+            if (b.status === 1) {
+              if (
+                x > b.x && // 1. 공의 x 좌표는 벽돌의 x 좌표보다 커야 한다.
+                x < b.x + brickWidth && // 2. 공의 x 좌표는 벽돌의 x 좌표 + 가로 길이보다 작아야 한다.
+                y > b.y && // 3. 공의 y 좌표는 벽돌의 y 좌표보다 커야 한다.
+                y < b.y + brickHeight // 4. 공의 y 좌표는 벽돌의 y 좌표 + 높이보다 작아야 한다.
+              ) {
+                dy = -dy;
+                // 공과의 충돌이 일어난 벽돌안 status값 0을 주어 비활성화.
+                b.status = 0;
+              }
+            }
+          }
+        }
+      }
+
+      setInterval(draw, 10);
+    </script>
+  </body>
+</html>
