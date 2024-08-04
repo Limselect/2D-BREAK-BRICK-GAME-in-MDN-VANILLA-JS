@@ -5,12 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gamedev Canvas Workshop</title>
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
 
+      canvas {
+        background: #eee;
+        display: block;
+        margin: 0 auto;
+        margin-top: 10%;
+      }
     </style>
   </head>
-  <!-- Vanilla JS, 2D Break Brick Game Project in MDN -->
-    <!-- 이미지의 렌더링과 움직임, 충돌감지, 컨트롤 메커니즘으로 canvas / tag 이해 증진 -->
+  <!-- Vanilla JS, 2D Break Brick Game Project in MDN JS 2D GAME PROJECT -->
+  <!-- 이미지의 렌더링과 움직임, 충돌감지, 컨트롤 메커니즘으로 canvas / tag 이해 증진 -->
   <body>
+    <!-- 게임이 렌더될 배경 생성 가로 480px, 세로 320px -->
+    <canvas id="myCanvas" width="480" height="320"></canvas>
 
+    <script>
+      // 자바스크립트가 작성됩니다.
+      // 변수 canvas에 엘리먼트 참조 입력
+      const canvas = document.getElementById("myCanvas");
+      //  캔버스에 그리기 위한 도구인 2D rendering context를 변수 ctx에 저장
+      const ctx = canvas.getContext("2d");
+
+      // 빨간색 네모를 그리는 짧은 예제 코드 작성
+      // 그림 그리는 도구의 경로 시작
+      ctx.beginPath();
+      // 시작위치: 좌상단에서 x 20px 지점, y 20px 지점에서
+      // 가로 50px, 세로 50px 크기의 사각형 도형(rect) 생성.
+      ctx.rect(20, 40, 50, 50);
+      // fillStyle로 채워질 색상지정 #FF0000, fill로 채우기.
+      ctx.fillStyle = "#FF0000";
+      ctx.fill();
+      // 그림 그리는 도구의 경로 끝
+      ctx.closePath();
+
+      // 초록색 원을 그리는 짧은 예제 코드 작성
+      ctx.beginPath();
+      // 중심위치: 좌상단에서 x 240px 지점, y 16px 지점에서
+      // 가로 240px, 세로 160px, 반지름 20px, 시작 각: 0라디안,
+      // 끝나는 각: pi * 2(약 6.28)라디안 크기의 false(시계방향)방향으로 그려진
+      // 원 도형(arc) 생성. * 1라디안: 약 57.3도.
+      ctx.arc(240, 160, 20, 0, Math.PI * 2, false);
+      // fillStyle로 채워질 색상지정 "green", fill로 채우기.
+      ctx.fillStyle = "green";
+      ctx.fill();
+      ctx.closePath();
+
+      // 원의 외각선 그리는 짧은 예제 코드 작성
+      ctx.beginPath();
+      // 중심위치: 좌상단에서 x 240px 지점, y 16px 지점에서
+      // 가로 240px, 세로 160px, 반지름 20px, 시작 각: 0라디안,
+      // 끝나는 각: pi * 2(약 6.28)라디안 크기의 false(시계방향)방향으로 그려진
+      // 원 도형(arc) 생성. * 1라디안: 약 57.3도.
+      ctx.arc(240, 160, 20, Math.PI * 2, false);
+      // strokeStyle로 채워질 색상지정 "blue, 0.5", stroke로 외각선 그리기.
+      ctx.stokeStyle = "rgba(0, 0, 255, 0.5)";
+      ctx.stroke();
+      ctx.closePath();
+    </script>
   </body>
 </html>
