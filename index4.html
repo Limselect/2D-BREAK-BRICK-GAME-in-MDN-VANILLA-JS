@@ -34,7 +34,6 @@
       let dx = 2;
       let dy = -2;
 
-      // 간단한 충돌 감지, 쉬운 계산을 위해 반지름에 변수 지정.
       const ballRadius = 10;
 
       function drawBall() {
@@ -51,17 +50,15 @@
         x += dx;
         y += dy;
 
-        // 캔버스 상단에 부딪혔을 때 반대(아래)로 튕기기
-        // y가 dy방향으로 계속해서 나아가는 값이 0보다 작아지면
-        if (y + dy < 0) {
-          // -y 값으로 진행되던 방향을 -(-y) = y 값으로 진행방향 바꾸기
-          dy = -dy;
+        // 위, 아래와 마찬가지로 좌, 우로 튕겨내는 코드 작성
+        // x와 y값은 원의 중심이기준이라 중심이 닿고나서 튕기면 공이 캔버스 밖으로 숨었다가
+        // 나오는 현상이 발생, 따라서 원의 외각선이 닿으면 튕겨낼 수 있게 벽에 튕기는
+        // 원의 중심에 반지름의 길이만큼 더해줌(벽을 축소시킴, 캔버스의 크기는 동일함).
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
         }
 
-        // 캔버스 하단에 부딪혔을 때 반대(위)로 튕기기
-        // y가 dy방향으로 계속해서 나아가는 값이 canvas.height(320)보다 커지면
-        if (y + dy > canvas.height) {
-          // y 값으로 진행되던 방향을 -y 값으로 진행방향 바꾸기
+        if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
           dy = -dy;
         }
       }
